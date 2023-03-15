@@ -1,2 +1,2 @@
-# Faction-Chess
+# Faction Chess
 Chess, but more?
