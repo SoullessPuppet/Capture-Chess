@@ -11,6 +11,8 @@ public class Tooltip : MonoBehaviour
     public LayoutElement layoutElement;
     public int characterWrapLimit;
     RectTransform rectTransform;
+    float xOffset = 0.2f;
+    float yOffset = 0.2f;
 
     private void Awake()
     {
@@ -56,7 +58,7 @@ public class Tooltip : MonoBehaviour
         //Position tooltip at mouse
         Vector2 mouseScreenPos = Input.mousePosition;
         Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
-        transform.position = new Vector2(mouseWorldPos.x + 0.1f, mouseWorldPos.y + 0.1f);
+        rectTransform.position = new Vector3(mouseWorldPos.x + xOffset, mouseWorldPos.y + yOffset, rectTransform.position.z);
 
         //Shift the tooltip so that it avoids going outside the screen...
         float pivotX = mouseScreenPos.x / Screen.width;
@@ -67,6 +69,16 @@ public class Tooltip : MonoBehaviour
             pivotX = 0;
         if (pivotY < 0.7)
             pivotY = 0;
+
+        if (pivotX < 0.5 && xOffset < 0)
+            xOffset = -xOffset;
+        if (pivotX >= 0.5 && xOffset > 0)
+            xOffset = -xOffset;
+
+        if (pivotY < 0.5 && yOffset < 0)
+            yOffset = -yOffset;
+        if (pivotY >= 0.5 && yOffset > 0)
+            yOffset = -yOffset;
 
         rectTransform.pivot = new Vector2(pivotX, pivotY);
     }

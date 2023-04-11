@@ -13,10 +13,11 @@ public class GameManager : MonoBehaviour
     public GameObject gameButtonsPanel;
     public GameObject skillsPanel;
     public PromotionMenu promotionMenu;
+    public CaptureInventory captureInventory;
 
     GameObject selectedObject;
 
-    GameObject[,] boardMatrix = new GameObject[8,8];
+    GameObject[,] boardMatrix = new GameObject[10,10];
     List<GameObject> whitePieces = new();
     List<GameObject> blackPieces = new();
     string currentPlayer = "white";
@@ -121,14 +122,14 @@ public class GameManager : MonoBehaviour
                 Destroy(allMovePlates[i].gameObject);
 
         //White backline
-        SpawnPiece("white", "rook", 0, 0);
-        SpawnPiece("white", "knight", 1, 0);
-        SpawnPiece("white", "bishop", 2, 0);
-        SpawnPiece("white", "queen", 3, 0);
-        SpawnPiece("white", "king", 4, 0);
-        SpawnPiece("white", "bishop", 5, 0);
-        SpawnPiece("white", "knight", 6, 0);
-        SpawnPiece("white", "rook", 7, 0);
+        SpawnPiece("white", "rook", 1, 0);
+        SpawnPiece("white", "knight", 2, 0);
+        SpawnPiece("white", "bishop", 3, 0);
+        SpawnPiece("white", "queen", 4, 0);
+        SpawnPiece("white", "king", 5, 0);
+        SpawnPiece("white", "bishop", 6, 0);
+        SpawnPiece("white", "knight", 7, 0);
+        SpawnPiece("white", "rook", 8, 0);
         //White frontline
         SpawnPiece("white", "pawn", 0, 1);
         SpawnPiece("white", "pawn", 1, 1);
@@ -138,24 +139,30 @@ public class GameManager : MonoBehaviour
         SpawnPiece("white", "pawn", 5, 1);
         SpawnPiece("white", "pawn", 6, 1);
         SpawnPiece("white", "pawn", 7, 1);
+        SpawnPiece("white", "pawn", 8, 1);
+        SpawnPiece("white", "pawn", 9, 1);
+        SpawnPiece("white", "spawner", 5, 2);
         //Black frontline
-        SpawnPiece("black", "pawn", 0, 6);
-        SpawnPiece("black", "pawn", 1, 6);
-        SpawnPiece("black", "pawn", 2, 6);
-        SpawnPiece("black", "pawn", 3, 6);
-        SpawnPiece("black", "pawn", 4, 6);
-        SpawnPiece("black", "pawn", 5, 6);
-        SpawnPiece("black", "pawn", 6, 6);
-        SpawnPiece("black", "pawn", 7, 6);
+        SpawnPiece("black", "pawn", 0, 8);
+        SpawnPiece("black", "pawn", 1, 8);
+        SpawnPiece("black", "pawn", 2, 8);
+        SpawnPiece("black", "pawn", 3, 8);
+        SpawnPiece("black", "pawn", 4, 8);
+        SpawnPiece("black", "pawn", 5, 8);
+        SpawnPiece("black", "pawn", 6, 8);
+        SpawnPiece("black", "pawn", 7, 8);
+        SpawnPiece("black", "pawn", 8, 8);
+        SpawnPiece("black", "pawn", 9, 8);
+        SpawnPiece("black", "spawner", 5, 7);
         //Black backline
-        SpawnPiece("black", "rook", 0, 7);
-        SpawnPiece("black", "knight", 1, 7);
-        SpawnPiece("black", "bishop", 2, 7);
-        SpawnPiece("black", "queen", 3, 7);
-        SpawnPiece("black", "king", 4, 7);
-        SpawnPiece("black", "bishop", 5, 7);
-        SpawnPiece("black", "knight", 6, 7);
-        SpawnPiece("black", "rook", 7, 7);
+        SpawnPiece("black", "rook", 1, 9);
+        SpawnPiece("black", "knight", 2, 9);
+        SpawnPiece("black", "bishop", 3, 9);
+        SpawnPiece("black", "queen", 4, 9);
+        SpawnPiece("black", "king", 5, 9);
+        SpawnPiece("black", "bishop", 6, 9);
+        SpawnPiece("black", "knight", 7, 9);
+        SpawnPiece("black", "rook", 8, 9);
     }
 
     void SpawnPiece(string team, string pieceType, int x, int y)
@@ -214,6 +221,9 @@ public class GameManager : MonoBehaviour
             case "pawn":
                 PawnMovePlates();
                 break;
+            case "spawner":
+                SpawnerMovePlates();
+                break;
         }
     }
     void DestroyMovePlates()
@@ -228,14 +238,19 @@ public class GameManager : MonoBehaviour
         ChessPiece movingPiece = selectedObject.GetComponent<ChessPiece>();
         int movePlateX = mp.GetBoardX();
         int movePlateY = mp.GetBoardY();
+        ChessPiece pieceAtDestination = null;
         string pieceTypeAtDestination = null;
 
         if (boardMatrix[movePlateX, movePlateY] != null)
-            pieceTypeAtDestination = boardMatrix[movePlateX, movePlateY].GetComponent<ChessPiece>().GetPieceType();
+        {
+            pieceAtDestination = boardMatrix[movePlateX, movePlateY].GetComponent<ChessPiece>();
+            pieceTypeAtDestination = pieceAtDestination.GetPieceType();
+        }
 
         if (mp.IsAttack())
         {
             boardMatrix[movePlateX, movePlateY].SetActive(false);
+            captureInventory.AddToInventory(pieceAtDestination, currentPlayer);
             boardMatrix[movePlateX, movePlateY] = null;
         }
 
@@ -252,7 +267,7 @@ public class GameManager : MonoBehaviour
 
         if (movingPiece.GetPieceType() == "pawn")
         {
-            if (movingPiece.GetBoardY() == 7 && movingPiece.GetTeam() == "white")
+            if (movingPiece.GetBoardY() == 9 && movingPiece.GetTeam() == "white")
             {
                 promotionMenu.PromotePawn(movingPiece);
             }
@@ -288,6 +303,8 @@ public class GameManager : MonoBehaviour
             pieceAtTargetTile = GetAtPosition(x, y).GetComponent<ChessPiece>();
 
         if (pieceAtTargetTile != null && pieceAtTargetTile.GetTeam() == selectedPiece.GetTeam())
+            return;
+        if (pieceAtTargetTile != null && pieceAtTargetTile.GetPieceType() == "spawner")
             return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
@@ -332,6 +349,8 @@ public class GameManager : MonoBehaviour
 
         if (pieceAtTargetTile != null && pieceAtTargetTile.GetTeam() == selectedPiece.GetTeam())
             return;
+        if (pieceAtTargetTile != null && pieceAtTargetTile.GetPieceType() == "spawner")
+            return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
         MovePlate newPlateScript = newPlate.GetComponent<MovePlate>();
@@ -352,9 +371,9 @@ public class GameManager : MonoBehaviour
             if (GetAtPosition(x, y) != null)
             {
                 ChessPiece pieceAtTargetTile = GetAtPosition(x, y).GetComponent<ChessPiece>();
-                if (pieceAtTargetTile.GetTeam() == selectedPiece.GetTeam())
+                if (pieceAtTargetTile != null && pieceAtTargetTile.GetTeam() == selectedPiece.GetTeam() && pieceAtTargetTile.GetPieceType() != "spawner")
                     break;
-                if (pieceAtTargetTile.GetTeam() != selectedPiece.GetTeam())
+                if (pieceAtTargetTile.GetTeam() != selectedPiece.GetTeam() && pieceAtTargetTile.GetPieceType() != "spawner")
                 {
                     SpawnMovePlateAt(x, y);
                     break;
@@ -415,7 +434,22 @@ public class GameManager : MonoBehaviour
 
         if (selectedPiece.GetTeam() == "white" && y == 1)
             SpawnMoveOnlyPlateAt(x, forwardOneTile + 1);
-        if (selectedPiece.GetTeam() == "black" && y == 6)
+        if (selectedPiece.GetTeam() == "black" && y == 8)
             SpawnMoveOnlyPlateAt(x, forwardOneTile - 1);
+    }
+
+    void SpawnerMovePlates()
+    {
+        ChessPiece selectedPiece = selectedObject.GetComponent<ChessPiece>();
+        int x = selectedPiece.GetBoardX();
+        int y = selectedPiece.GetBoardY();
+
+        for (int i = x - 1; i <= x + 1; i++)
+        {
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                SpawnMoveOnlyPlateAt(i, j);
+            }
+        }
     }
 }

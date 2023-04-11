@@ -7,7 +7,7 @@ public class MovePlate : MonoBehaviour
     int boardX;
     int boardY;
     bool isAttack = false;
-    float boardOffsetX = -3.2f;
+    float boardOffsetX = -3.9f;
 
     public int GetBoardX()
     {
@@ -42,10 +42,10 @@ public class MovePlate : MonoBehaviour
     }
     public void UpdatePosition()
     {
-        float convertedX = boardX - 3.5f + boardOffsetX;
-        convertedX *= 1.22f;
-        float convertedY = boardY - 3.5f;
-        convertedY *= 1.22f;
+        float convertedX = boardX - 4.5f + boardOffsetX;
+        //convertedX *= 1.22f;
+        float convertedY = boardY - 4.5f;
+        //convertedY *= 1.22f;
 
         this.transform.position = new Vector3(convertedX, convertedY, -1);
     }

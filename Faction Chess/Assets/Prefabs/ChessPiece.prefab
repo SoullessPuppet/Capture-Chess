@@ -83,7 +83,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &3001407472562170085
@@ -98,18 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dea2493f4c1d7794783b1511405995d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  white_king: {fileID: 21300000, guid: d5380c95e91f0ba46a2500e3b57bf14f, type: 3}
-  white_queen: {fileID: 21300000, guid: ca9712c5140b4074aa06ffb58421dcef, type: 3}
-  white_bishop: {fileID: 21300000, guid: 4c3ef652f34a7a14999eebe99f12c4a6, type: 3}
-  white_knight: {fileID: 21300000, guid: cb3f51dbc42c9e4488bd5e83417ac2ed, type: 3}
-  white_rook: {fileID: 21300000, guid: 582e26d0fe119e44bb853ca28b52796a, type: 3}
-  white_pawn: {fileID: 21300000, guid: 77d7d43281b4f1a4785ca8392d495022, type: 3}
-  black_king: {fileID: 21300000, guid: a052c32b0238996439424f7ba4dbea9d, type: 3}
-  black_queen: {fileID: 21300000, guid: f03c0e9d5f0174e4cb654f6295a84723, type: 3}
-  black_bishop: {fileID: 21300000, guid: 8e3f8509514634242a4c72fe4e094630, type: 3}
-  black_knight: {fileID: 21300000, guid: 7fc3d26aee5d0104a9187376c9320c06, type: 3}
-  black_rook: {fileID: 21300000, guid: 6f6bdc4953e2e4f4eb26a394372411bb, type: 3}
-  black_pawn: {fileID: 21300000, guid: 7ae5b664af31fc94fa44bd51e7f38ef9, type: 3}
+  spriteLibrary: {fileID: 7985875150275204245, guid: dc6ad9d26a0f97442a8d211be0d7fc17, type: 3}
 --- !u!61 &4100905452712168379
 BoxCollider2D:
   m_ObjectHideFlags: 0

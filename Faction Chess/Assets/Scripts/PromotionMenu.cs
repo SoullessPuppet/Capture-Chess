@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class PromotionMenu : MonoBehaviour
 {
     public GameObject gameButtonsPanel;
-    public Sprite white_queen, white_bishop, white_knight, white_rook;
-    public Sprite black_queen, black_bishop, black_knight, black_rook;
+    //public Sprite white_queen, white_bishop, white_knight, white_rook;
+    //public Sprite black_queen, black_bishop, black_knight, black_rook;
+    public SpriteLibrary spriteLibrary;
     public Image queenImage;
     public Image knightImage;
     public Image bishopImage;
@@ -15,23 +16,24 @@ public class PromotionMenu : MonoBehaviour
     ChessPiece target;
     string team;
 
+
     public void PromotePawn(ChessPiece cp)
     {
         target = cp;
         team = cp.GetTeam();
         if (team == "white")
         {
-            queenImage.sprite = white_queen;
-            bishopImage.sprite = white_bishop;
-            knightImage.sprite = white_knight;
-            rookImage.sprite = white_rook;
+            queenImage.sprite = spriteLibrary.white_queen;
+            bishopImage.sprite = spriteLibrary.white_bishop;
+            knightImage.sprite = spriteLibrary.white_knight;
+            rookImage.sprite = spriteLibrary.white_rook;
         }
         else if (team == "black")
         {
-            queenImage.sprite = black_queen;
-            bishopImage.sprite = black_bishop;
-            knightImage.sprite = black_knight;
-            rookImage.sprite = black_rook;
+            queenImage.sprite = spriteLibrary.black_queen;
+            bishopImage.sprite = spriteLibrary.black_bishop;
+            knightImage.sprite = spriteLibrary.black_knight;
+            rookImage.sprite = spriteLibrary.black_rook;
         }
         gameButtonsPanel.SetActive(false);
         this.gameObject.SetActive(true);
