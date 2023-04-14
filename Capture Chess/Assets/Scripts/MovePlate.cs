@@ -7,6 +7,7 @@ public class MovePlate : MonoBehaviour
     int boardX;
     int boardY;
     bool isAttack = false;
+    bool isSpawn = false;
     float boardOffsetX = -3.9f;
 
     public int GetBoardX()
@@ -30,9 +31,19 @@ public class MovePlate : MonoBehaviour
         isAttack = true;
         GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
     }
+    public void ConvertToSpawn()
+    {
+        isSpawn = true;
+        GetComponent<SpriteRenderer>().color = new Color(0, 255, 0);
+    }
+
     public bool IsAttack()
     {
         return isAttack;
+    }
+    public bool IsSpawn()
+    {
+        return isSpawn;
     }
     public void MoveToPosition(int x, int y)
     {
