@@ -1,27 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-
-    public TextMeshProUGUI currentPlayerText;
     public GameObject gameButtonsPanel;
+    public GameObject mainMenuPanel;
+    public GameObject gameLengthPanel;
     public PromotionMenu promotionMenu;
+    public TextMeshProUGUI currentPlayerText;
+    public Slider gameLengthSlider;
+
     public BoardManager boardManager;
     public CaptureInventory captureInventory;
     public GameObject selectedObject;
 
     public string currentPlayer = "white";
-    int turn = 0;
+    int turn = 1;
     int lastTurn = 30;
     bool gameOver = false;
 
     private void Start()
     {
-        RestartGame();
+        ShowMainMenu();
     }
 
     private void Update()
@@ -62,17 +66,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestartGame()
+    public void NewGame()
     {
+        gameLengthPanel.SetActive(false);
+        if (gameLengthSlider.value * 2 > 150)
+            lastTurn = 999;
+        else
+            lastTurn = (int)gameLengthSlider.value*2;
+
         gameOver = false;
+        turn = 1;
         currentPlayer = "white";
         currentPlayerText.text = "White's turn (Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
         boardManager.ResetBoard();
+        gameLengthPanel.SetActive(false);
+    }
+
+    public void ShowMainMenu()
+    {
+        mainMenuPanel.SetActive(true);
+    }
+
+    public void ShowGameLengthPanel()
+    {
+        mainMenuPanel.SetActive(false);
+        gameLengthPanel.SetActive(true);
     }
 
     public void SwitchPlayer()
     {
         ClearSelection();
+        if (turn == lastTurn)
+            GameOverPointCount();
+        else
+            turn += 1;
+
         if (currentPlayer == "white")
         {
             currentPlayer = "black";
@@ -83,11 +111,6 @@ public class GameManager : MonoBehaviour
             currentPlayer = "white";
             currentPlayerText.text = "White's turn (Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
         }
-
-        if (turn == lastTurn)
-            GameOverPointCount();
-        else
-            turn += 1;
     }
 
     public void GameOver()

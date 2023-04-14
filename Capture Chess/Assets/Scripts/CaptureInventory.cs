@@ -10,7 +10,7 @@ public class CaptureInventory : MonoBehaviour
     public TextMeshProUGUI blackInvPawnText, blackInvKnightText, blackInvBishopText, blackInvRookText, blackInvQueenText, blackScoreText;
     int whiteInvPawn, whiteInvKnight, whiteInvBishop, whiteInvRook, whiteInvQueen;
     int blackInvPawn, blackInvKnight, blackInvBishop, blackInvRook, blackInvQueen;
-    public int whiteScore, blackScore;
+    public int whiteScore = 0, blackScore = 0, whiteScorePenalty = 0, blackScorePenalty = 0;
 
     public void ChangeInventory(string invOfTeam, string pieceType, int changeValue)
     {
@@ -124,11 +124,39 @@ public class CaptureInventory : MonoBehaviour
         blackInvRookText.text = blackInvRook.ToString();
         blackInvQueenText.text = blackInvQueen.ToString();
 
-        whiteScore = whiteInvPawn + whiteInvKnight * 3 + whiteInvBishop * 3 + whiteInvRook * 5 + whiteInvQueen * 9;
+        whiteScore = whiteInvPawn + whiteInvKnight * 3 + whiteInvBishop * 3 + whiteInvRook * 5 + whiteInvQueen * 9 - whiteScorePenalty;
         whiteScoreText.text = "Score: " + whiteScore.ToString();
 
-        blackScore = blackInvPawn + blackInvKnight * 3 + blackInvBishop * 3 + blackInvRook * 5 + blackInvQueen * 9;
+        blackScore = blackInvPawn + blackInvKnight * 3 + blackInvBishop * 3 + blackInvRook * 5 + blackInvQueen * 9 - blackScorePenalty;
         blackScoreText.text = "Score: " + blackScore.ToString();
+    }
+
+    public void ShowPenalty(string team, string pieceType, int penalty)
+    {
+        int basePieceValue = 0;
+        switch (pieceType)
+        {
+            case "pawn":
+                basePieceValue = 1;
+                break;
+            case "knight":
+                basePieceValue = 3;
+                break;
+            case "bishop":
+                basePieceValue = 3;
+                break;
+            case "rook":
+                basePieceValue = 5;
+                break;
+            case "queen":
+                basePieceValue = 9;
+                break;
+        }
+        int fullPenalty = basePieceValue + penalty;
+        if (team == "white")
+            whiteScoreText.text = "Score: " + whiteScore.ToString() + "(-" + fullPenalty.ToString() + ")";
+        else
+            blackScoreText.text = "Score: " + blackScore.ToString() + "(-" + fullPenalty.ToString() + ")";
     }
 
     public void Clear()

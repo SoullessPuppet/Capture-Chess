@@ -17,6 +17,10 @@ public class BoardManager : MonoBehaviour
 
     string spawningTeam = null;
     string spawningType = null;
+    int spawningPenalty = 0;
+
+    const int smallSpawningPenalty = 1;
+    const int largeSpawningPenalty = 3;
 
     public void ResetBoard()
     {
@@ -386,6 +390,10 @@ public class BoardManager : MonoBehaviour
         {
             for (int j = y - 1; j <= y + 1; j++)
             {
+                if (selectedPiece.GetTeam() == "white" && j >= 7)
+                    continue;
+                if (selectedPiece.GetTeam() == "black" && j <= 2)
+                    continue;
                 SpawnMoveOnlyPlateAt(i, j);
             }
         }
@@ -438,10 +446,14 @@ public class BoardManager : MonoBehaviour
         if (!captureInventory.HasInInventory(spawningTeam, spawningType))
             return;
 
+        if (spawningTeam == "white")
+            captureInventory.whiteScorePenalty += spawningPenalty;
+        else
+            captureInventory.blackScorePenalty += spawningPenalty;
         captureInventory.ChangeInventory(spawningTeam, spawningType, -1);
+
         int x = spawnPlate.GetBoardX();
         int y = spawnPlate.GetBoardY();
-
         Destroy(GetAtPosition(x, y));
         SpawnPiece(spawningTeam, spawningType, x, y);
 
@@ -461,6 +473,22 @@ public class BoardManager : MonoBehaviour
 
         spawningTeam = teamPartOfInput;
         spawningType = typePartOfInput;
+
+        switch (spawningType)
+        {
+            case "pawn":
+                spawningPenalty = 0;
+                break;
+            case "knight":
+            case "bishop":
+            case "rook":
+                spawningPenalty = smallSpawningPenalty;
+                break;
+            case "queen":
+                spawningPenalty = largeSpawningPenalty;
+                break;
+        }
+        captureInventory.ShowPenalty(spawningTeam, spawningType, spawningPenalty);
 
         gameManager.ClearSelection();
         SpawnerSpawnPlates();
