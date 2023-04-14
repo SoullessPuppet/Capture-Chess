@@ -1,2 +1,2 @@
-# Faction Chess
-Chess, but more?
+# Capture Chess
+Capture and convert enemy pieces
