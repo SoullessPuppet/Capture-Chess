@@ -117,10 +117,10 @@ public class ChessPiece : MonoBehaviour
     }
     public void UpdatePosition()
     {
-        float convertedX = boardX - 4.25f + boardOffsetX;
-        convertedX *= 1.03f;
-        float convertedY = boardY - 4.45f;
-        convertedY *= 1.03f;
+        float convertedX = boardX - 4.35f + boardOffsetX;
+        convertedX *= 1.015f;
+        float convertedY = boardY - 4.5f;
+        convertedY *= 1.015f;
 
         this.transform.position = new Vector3(convertedX, convertedY, -1);
     }

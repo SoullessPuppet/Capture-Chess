@@ -100,7 +100,10 @@ public class GameManager : MonoBehaviour
     {
         ClearSelection();
         if (turn == lastTurn)
-            GameOverPointCount();
+        {
+            GameOverScoreCount();
+            return;
+        }
         else
             turn += 1;
 
@@ -118,7 +121,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        gameOver = true;
+        print("normal game over");
         if (currentPlayer == "white")
         {
             currentPlayerText.text = "White WON!(Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
@@ -127,20 +130,23 @@ public class GameManager : MonoBehaviour
         {
             currentPlayerText.text = "Black WON!(Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
         }
+        gameOver = true;
     }
 
-    public void GameOverPointCount()
+    public void GameOverScoreCount()
     {
-        gameOver = true;
         int whiteScoreAdvantage = captureInventory.whiteScore - captureInventory.blackScore;
         if (whiteScoreAdvantage > 0)
+        {
             currentPlayerText.text = "White WON!(Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
+        }
         else if (whiteScoreAdvantage < 0)
             currentPlayerText.text = "Black WON!(Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
         else
         {
             currentPlayerText.text = "TIE! (Turn " + turn.ToString() + "/" + lastTurn.ToString() + ")";
         }
+        gameOver = true;
     }
 
     public void ClearSelection()
