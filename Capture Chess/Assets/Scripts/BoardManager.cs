@@ -17,17 +17,13 @@ public class BoardManager : MonoBehaviour
 
     string spawningTeam = null;
     string spawningType = null;
-    int spawningPenalty = 0;
-
-    const int smallSpawningPenalty = 1;
-    const int largeSpawningPenalty = 3;
 
     public void ResetBoard()
     {
         Array.Clear(boardMatrix, 0, boardMatrix.Length);
         whitePieces.Clear();
         blackPieces.Clear();
-        captureInventory.Clear();
+        captureInventory.Reset();
 
         ChessPiece[] allChessPieces = FindObjectsOfType<ChessPiece>();
         if (allChessPieces.Length > 0)
@@ -169,7 +165,7 @@ public class BoardManager : MonoBehaviour
         if (mp.IsAttack())
         {
             Destroy(boardMatrix[movePlateX, movePlateY]);
-            captureInventory.ChangeInventory(gameManager.currentPlayer, pieceTypeAtDestination, 1);
+            captureInventory.AddScoreFromCapturing(gameManager.currentPlayer, pieceTypeAtDestination);
             //boardMatrix[movePlateX, movePlateY] = null;
         }
 
@@ -443,14 +439,10 @@ public class BoardManager : MonoBehaviour
 
     public void SpawnFromInventory(MovePlate spawnPlate)
     {
-        if (!captureInventory.HasInInventory(spawningTeam, spawningType))
+        if (!captureInventory.CanAfford(spawningTeam, spawningType))
             return;
 
-        if (spawningTeam == "white")
-            captureInventory.whiteScorePenalty += spawningPenalty;
-        else
-            captureInventory.blackScorePenalty += spawningPenalty;
-        captureInventory.ChangeInventory(spawningTeam, spawningType, -1);
+        captureInventory.ChangeScore(spawningTeam, -captureInventory.GetCost(spawningType));
 
         int x = spawnPlate.GetBoardX();
         int y = spawnPlate.GetBoardY();
@@ -468,27 +460,11 @@ public class BoardManager : MonoBehaviour
 
         if (teamPartOfInput != gameManager.currentPlayer)
             return;
-        if (!captureInventory.HasInInventory(teamPartOfInput, typePartOfInput))
-            return;
 
         spawningTeam = teamPartOfInput;
         spawningType = typePartOfInput;
 
-        switch (spawningType)
-        {
-            case "pawn":
-                spawningPenalty = 0;
-                break;
-            case "knight":
-            case "bishop":
-            case "rook":
-                spawningPenalty = smallSpawningPenalty;
-                break;
-            case "queen":
-                spawningPenalty = largeSpawningPenalty;
-                break;
-        }
-        captureInventory.ShowPenalty(spawningTeam, spawningType, spawningPenalty);
+        captureInventory.ShowPenalty(spawningTeam, spawningType);
 
         gameManager.ClearSelection();
         SpawnerSpawnPlates();
