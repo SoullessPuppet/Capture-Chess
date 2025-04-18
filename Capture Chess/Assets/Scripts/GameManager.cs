@@ -7,6 +7,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject boardCanvas;
     public GameObject gameButtonsPanel;
     public GameObject mainMenuPanel;
     public GameObject gameLengthPanel;
@@ -69,6 +70,7 @@ public class GameManager : MonoBehaviour
     public void NewGame()
     {
         gameLengthPanel.SetActive(false);
+        boardCanvas.SetActive(true);
         if (gameLengthSlider.value * 2 > 150)
             lastTurn = 999;
         else
@@ -85,6 +87,7 @@ public class GameManager : MonoBehaviour
     public void ShowMainMenu()
     {
         mainMenuPanel.SetActive(true);
+        boardCanvas.SetActive(false);
     }
 
     public void ShowGameLengthPanel()

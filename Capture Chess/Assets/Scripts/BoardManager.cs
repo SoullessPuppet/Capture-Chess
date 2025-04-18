@@ -9,6 +9,7 @@ public class BoardManager : MonoBehaviour
     public CaptureInventory captureInventory;
     public GameObject chessPiece;
     public GameObject movePlate;
+    public Canvas boardCanvas;
     GameObject whiteSpawner, blackSpawner;
 
     GameObject[,] boardMatrix = new GameObject[10, 10];
@@ -55,7 +56,7 @@ public class BoardManager : MonoBehaviour
         SpawnPiece("white", "pawn", 7, 1);
         SpawnPiece("white", "pawn", 8, 1);
         SpawnPiece("white", "pawn", 9, 1);
-        whiteSpawner = SpawnPiece("white", "spawner", 5, 2);
+        //whiteSpawner = SpawnPiece("white", "spawner", 5, 2);
         //Black frontline
         SpawnPiece("black", "pawn", 0, 8);
         SpawnPiece("black", "pawn", 1, 8);
@@ -67,7 +68,7 @@ public class BoardManager : MonoBehaviour
         SpawnPiece("black", "pawn", 7, 8);
         SpawnPiece("black", "pawn", 8, 8);
         SpawnPiece("black", "pawn", 9, 8);
-        blackSpawner = SpawnPiece("black", "spawner", 5, 7);
+        //blackSpawner = SpawnPiece("black", "spawner", 5, 7);
         //Black backline
         SpawnPiece("black", "rook", 1, 9);
         SpawnPiece("black", "knight", 2, 9);
@@ -81,6 +82,7 @@ public class BoardManager : MonoBehaviour
     public GameObject SpawnPiece(string team, string pieceType, int x, int y)
     {
         GameObject newPiece = Instantiate(chessPiece, Vector3.zero, Quaternion.identity);
+        newPiece.transform.SetParent(boardCanvas.transform);
         ChessPiece newPieceScript = newPiece.GetComponent<ChessPiece>();
         newPieceScript.SetTeam(team);
         newPieceScript.SetPieceType(pieceType);
@@ -226,6 +228,7 @@ public class BoardManager : MonoBehaviour
             return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
+        newPlate.transform.SetParent(boardCanvas.transform);
         MovePlate newPlateScript = newPlate.GetComponent<MovePlate>();
         newPlateScript.MoveToPosition(x, y);
         newPlateScript.UpdatePosition();
@@ -250,6 +253,7 @@ public class BoardManager : MonoBehaviour
             return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
+        newPlate.transform.SetParent(boardCanvas.transform);
         MovePlate newPlateScript = newPlate.GetComponent<MovePlate>();
         newPlateScript.SetBoardX(x);
         newPlateScript.SetBoardY(y);
@@ -274,6 +278,7 @@ public class BoardManager : MonoBehaviour
             return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
+        newPlate.transform.SetParent(boardCanvas.transform);
         MovePlate newPlateScript = newPlate.GetComponent<MovePlate>();
         newPlateScript.SetBoardX(x);
         newPlateScript.SetBoardY(y);
@@ -287,6 +292,7 @@ public class BoardManager : MonoBehaviour
             return;
 
         GameObject newPlate = Instantiate(movePlate, Vector3.zero, Quaternion.identity);
+        newPlate.transform.SetParent(boardCanvas.transform);
         MovePlate newPlateScript = newPlate.GetComponent<MovePlate>();
         newPlateScript.MoveToPosition(x, y);
         newPlateScript.UpdatePosition();
@@ -395,43 +401,33 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    public void SpawnerSpawnPlates()
+    public void ShowSpawnPlates()
     {
-        GameObject spawner;
-        if (spawningTeam == "white")
-            spawner = whiteSpawner;
-        else
-            spawner = blackSpawner;
-
-        ChessPiece spawnerScript = spawner.GetComponent<ChessPiece>();
-        int x = spawnerScript.GetBoardX();
-        int y = spawnerScript.GetBoardY();
-
-        if(spawningType == "pawn")
+        for (int i = 0; i <= 9; i++)   // x axis
         {
-            for (int i = x - 1; i <= x + 1; i++)
+            for (int j = 0; j <= 9; j++)
             {
-                for (int j = y - 1; j <= y + 1; j++)
+                if (spawningTeam == "white" && j >= 7)
+                    continue;
+                if (spawningTeam == "black" && j <= 2)
+                    continue;
+                GameObject pieceAtPosition = GetAtPosition(i, j);
+                // Empty tile can be used to spawn Pawns
+                if (pieceAtPosition == null)
                 {
-                    GameObject pieceAtDestination = GetAtPosition(i, j);
-                    if (pieceAtDestination == null)
+                    if (spawningType == "pawn")
                         SpawnSpawnPlateAt(i, j);
                 }
-            }
-        }
-        else
-        {
-            for (int i = x - 1; i <= x + 1; i++)
-            {
-                for (int j = y - 1; j <= y + 1; j++)
-                {
-                    GameObject goAtDestination = GetAtPosition(i, j);
-                    if (goAtDestination == null)
-                        continue;
 
-                    ChessPiece pieceAtDestination = goAtDestination.GetComponent<ChessPiece>();
-                    if (pieceAtDestination.GetPieceType() == "pawn" && pieceAtDestination.GetTeam() == gameManager.currentPlayer)
-                        SpawnSpawnPlateAt(i, j);
+                // Pawns can be used to spawn non-Pawns
+                else if (pieceAtPosition != null && spawningType != "pawn")
+                {
+                    if (pieceAtPosition.GetComponent<ChessPiece>() != null)   // Ensures it's a ChessPiece first
+                    {
+                        if (pieceAtPosition.GetComponent<ChessPiece>().GetPieceType() == "pawn"
+                            && pieceAtPosition.GetComponent<ChessPiece>().GetTeam() == spawningTeam)   // Then check if it's YOUR Pawn
+                            SpawnSpawnPlateAt(i, j);
+                    }
                 }
             }
         }
@@ -467,7 +463,7 @@ public class BoardManager : MonoBehaviour
         captureInventory.ShowPenalty(spawningTeam, spawningType);
 
         gameManager.ClearSelection();
-        SpawnerSpawnPlates();
+        ShowSpawnPlates();
     }
 }
 
